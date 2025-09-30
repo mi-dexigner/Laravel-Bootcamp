@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Chirp;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ChirpController extends Controller
 {
@@ -65,10 +66,12 @@ class ChirpController extends Controller
     ]);
 
     // Create the chirp (no user for now - we'll add auth later)
-    Chirp::create([
+   /*  Chirp::create([
         'message' => $validated['message'],
         'user_id' => null, // We'll add authentication in lesson 11
-    ]);
+    ]); */
+      // Use the authenticated user
+    auth()->user()->chirps()->create($validated);
 
     // Redirect back to the feed
     return redirect('/')->with('success', 'Your chirp has been posted!');
@@ -87,6 +90,7 @@ class ChirpController extends Controller
      */
     public function edit(Chirp $chirp)
     {
+        $this->authorize('update', $chirp);
          // We'll add authorization in lesson 11
     return view('chirps.edit', compact('chirp'));
     }
@@ -96,6 +100,9 @@ class ChirpController extends Controller
      */
     public function update(Request $request, Chirp $chirp)
     {
+     $this->authorize('update', $chirp);
+
+
         // Validate
     $validated = $request->validate([
         'message' => 'required|string|max:255',
@@ -112,6 +119,7 @@ class ChirpController extends Controller
      */
     public function destroy(Chirp $chirp)
     {
+        // $this->authorize('delete',$chirp);
         $chirp->delete();
 
     return redirect('/')->with('success', 'Chirp deleted!');
