@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+
 class ChirpController extends Controller
 {
     /**
@@ -71,6 +72,7 @@ class ChirpController extends Controller
         'user_id' => null, // We'll add authentication in lesson 11
     ]); */
       // Use the authenticated user
+
     auth()->user()->chirps()->create($validated);
 
     // Redirect back to the feed
